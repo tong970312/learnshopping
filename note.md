@@ -19,20 +19,20 @@
 #####5.进入github网站，将公钥添加进去
 
 git 验证
-执行git version ,出现版本信息,安装成功
+#####执行git version ,出现版本信息,安装成功
 git常用命令
- git init 创建本地仓库
- git add 添加到暂存区
- git commit -m "描述"提交到本地仓库
- git status 检查工作区文件状态
- git log 查看提交committed
- git reset --hard committed 版本回退
- git branch 查看分支
- git checkout -b dev 创建并转到dev分支
- git checkout 分支名    切换分支
- git pull 拉取
- git push -u origin master 提交
- git merge branchname 分支合并
- git remote add origin 远程仓库地址
- git push -u -f origin master 第一次向远程仓库推送
- git push origin master 提交到远程
+##### git init 创建本地仓库
+#####git add 添加到暂存区
+#####git commit -m "描述"提交到本地仓库
+#####git status 检查工作区文件状态
+#####git log 查看提交committed
+#####git reset --hard committed 版本回退
+#####git branch 查看分支
+#####git checkout -b dev 创建并转到dev分支
+#####git checkout 分支名    切换分支
+#####git pull 拉取
+#####git push -u origin master 提交
+#####git merge branchname 分支合并
+#####git remote add origin 远程仓库地址
+#####git push -u -f origin master 第一次向远程仓库推送
+#####git push origin master 提交到远程
