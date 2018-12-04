@@ -79,8 +79,16 @@ create table user(
 `id`        int(11)     not null    auto_increment  comment'用户id',
 `username`  varchar(50) not null    comment'用户名',
 `password`  varchar(50) not null    comment'密码',
-``
-)
+`email`     varchar(50) not null    comment'邮箱',
+`phone`     varchar(11) not null    comment'联系方式',
+`question`  varchar(100) not null   comment'密保问题',
+`answer`    varchar(100) not null   comment'答案',
+`role`      int(4)      not null    comment'用户角色',
+`create_time`   datetime    comment'创建时间',
+`uodate_time`   datetime    comment'修改时间',
+primary key(`id`),
+unique key `user_name_index`(`username`) using btree
+);
 ```
 
 
