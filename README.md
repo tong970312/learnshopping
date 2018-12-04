@@ -57,3 +57,11 @@
   ###### 查看支付状态
  #### 八、线上部署
   ##### 阿里云部署
+
+#### ----
+#### 远程分支合并dev
+    git checkout dev
+    git pull origin dev
+    git checkout master
+    git merge dev
+    git push origin master
