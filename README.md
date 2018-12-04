@@ -66,14 +66,14 @@
     git merge dev
     git push origin master
     
- ####----------20181204-------------
+ #### ----------20181204-------------
 #### 数据库设计
 ##### 创建数据库
 ```
 create database ilearnshopping`
 use ilearnshopping`
 ```
-####用户表
+#### 用户表
 ```
 create table user(
 `id`        int(11)     not null    auto_increment  comment'用户id',
@@ -90,7 +90,7 @@ primary key(`id`),
 unique key `user_name_index`(`username`) using btree
 );
 ```
-####类别表
+#### 类别表
 ```
 create table neuedu_category(
 `id`          int(11)     not null   auto_increment  comment '类别id',       
@@ -114,7 +114,7 @@ p系列       4       8         6
 mate系列    4       9         6
 查询电子产品的商品----> 递归
 ```
-####商品表
+#### 商品表
 ```
  create table neuedu_product(
 `id`          int(11)       not null   auto_increment  comment '商品id',    
@@ -132,7 +132,7 @@ mate系列    4       9         6
  PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8
 ```
-####购物车表
+#### 购物车表
 ```
  create table neuedu_cart(
  `id`          int(11)       not null   auto_increment  comment '购物车id',  
@@ -146,7 +146,7 @@ mate系列    4       9         6
  key `user_id_index`(`user_id`) USING BTREE
   )ENGINE=InnoDB DEFAULT CHARSET=UTF8
 ```
-####订单表
+#### 订单表
 ```
  create table neuedu_order(
  `id`           int(11)    not null  auto_increment comment '订单id,主键',
@@ -167,7 +167,7 @@ mate系列    4       9         6
   UNIQUE KEY `order_no_index`(`order_no`) USING BTREE
  )ENGINE=InnoDB DEFAULT CHARSET=UTF8
 ```
-####订单明细表
+#### 订单明细表
 ```
 create table neuedu_order_item(
  `id`           int(11)    not null  auto_increment comment '订单明细id,主键',
@@ -186,7 +186,7 @@ create table neuedu_order_item(
   KEY `order_no_user_id_index`(`order_no`,`user_id`) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8
 ```
-####支付表
+#### 支付表
 ```
 create table neuedu_payinfo(
  `id`           int(11)    not null  auto_increment comment '主键',
@@ -200,7 +200,7 @@ create table neuedu_payinfo(
   PRIMARY KEY(`id`)
  )ENGINE=InnoDB DEFAULT CHARSET=UTF8
 ```
-####地址表
+#### 地址表
 ```
 create table neuedu_shipping(
 `id`       int(11)      not null  auto_increment,
