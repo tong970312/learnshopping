@@ -79,7 +79,7 @@ create table user(
 `id`        int(11)     not null    auto_increment  comment'用户id',
 `username`  varchar(50) not null    comment'用户名',
 `password`  varchar(50) not null    comment'密码',
-
+``
 )
 
 
