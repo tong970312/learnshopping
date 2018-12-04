@@ -69,19 +69,19 @@
  ####----------20181204-------------
 #### 数据库设计
 ##### 创建数据库
-``
-create database ilearnshopping
-use ilearnshopping
-``
+
+`create database ilearnshopping`
+`use ilearnshopping`
+
 ####用户表
-``
+
 create table user(
-'id'        int(11)     not null    auto_increment  comment'用户id',
-'username'  varchar(50) not null    comment'用户名',
-'password'  varchar(50) not null    comment'密码',
-''
+`id`        int(11)     not null    auto_increment  comment'用户id',
+`username`  varchar(50) not null    comment'用户名',
+`password`  varchar(50) not null    comment'密码',
+
 )
-``
+
 
 
 
