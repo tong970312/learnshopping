@@ -217,6 +217,12 @@ create table neuedu_shipping(
 `update_time`       datetime      not null   comment '最后一次更新时间',
  PRIMARY KEY(`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+
+```
+##### 冗余字段
+```
+冗余字段是指反复出现的，重复的字段。也就是说在数据库中如果表a出现过字段b，表c再出现字段b，那么字段b就可以被看作是冗余字段了
+例：订单表，订单明细表中的user_id
 ```
 
 
