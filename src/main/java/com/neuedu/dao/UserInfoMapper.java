@@ -50,5 +50,24 @@ public interface UserInfoMapper {
 
     UserInfo selectUserByUsernameAndPassword(@Param("username") String username,
                                              @Param("password") String password);
+    /*校验邮箱*/
+    int checkEmail(String email);
 
+    String selectQuestionByUsername(@Param("username") String username);
+
+    /**
+     * 校验答案
+     */
+    int checkAnswerByUsernameAndQuestion(@Param("username") String username,
+                                         @Param("question") String question,
+                                         @Param("answer") String answer);
+
+    /**
+     * 根据用户名修改密码
+     * @param username
+     * @param passwordNew
+     * @return
+     */
+    int updatePasswordByUsername(@Param("username") String username,
+                                 @Param("password") String passwordNew);
 }

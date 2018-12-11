@@ -1,7 +1,9 @@
 package com.neuedu.bean;
 
-import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.Date;
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class UserInfo {
     /**
      *
@@ -331,5 +333,21 @@ public class UserInfo {
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                ", role=" + role +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 }

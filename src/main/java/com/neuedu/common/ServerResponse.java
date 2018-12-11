@@ -1,10 +1,12 @@
 package com.neuedu.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * 封装返回前端的高复用对象
  * @param <T>
+ *     int 型的status状态码, 泛型 类型的data数据， String 型的信息
  */
 /*定义成泛型类*/
     /*筛选非空的数据进行显示*/
@@ -32,10 +34,14 @@ public class ServerResponse<T> {
         this.msg = msg;
     }
 
+
+
+
     /**
      * 判断接口是否调用成功
      *返回到前台,json会把这个方法当做get方法区扫描,所以返回的数据后会带有success
      */
+    @JsonIgnore
     public  boolean isSuccess(){
         return this.status==Const.SUCCESS_CODE;
     }
@@ -56,6 +62,9 @@ public class ServerResponse<T> {
 
         return new ServerResponse(Const.SUCCESS_CODE,msg,data);
     }
+
+
+
 
     /**
      * 失败

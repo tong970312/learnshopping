@@ -43,4 +43,15 @@ public interface CategoryMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Category record);
+
+    /**
+     * 查询子类(平级)
+     */
+    List<Category> findChildCategory(Integer categoryId);
+
+    /**
+     * 查询商品的父类
+     */
+    Category findParentCategory(Integer categoryId);
+
 }
