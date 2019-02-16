@@ -3,8 +3,10 @@ package com.neuedu.service.imp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.neuedu.bean.Category;
 import com.neuedu.bean.Product;
+import com.neuedu.common.Const;
 import com.neuedu.common.ResponseCode;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.dao.CategoryMapper;
@@ -17,8 +19,13 @@ import com.neuedu.vo.ProductListVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class IProductServiceImpl implements IProductService {
@@ -35,14 +42,14 @@ public class IProductServiceImpl implements IProductService {
             return ServerResponse.createServerResponseByError("参数为空");
         }
         //设置商品主图
-       /* String subImages = product.getSubImages();
-        if (StringUtils.isBlank(subImages)) {
+        String subImages = product.getSubImages();
+        if (!StringUtils.isBlank(subImages)) {
             String[] subImageArr = subImages.split(",");
             if (subImageArr.length > 0) {
                 //设置商品的主图
                 product.setMainImage(subImageArr[0]);
             }
-        }*/
+        }
         //商品添加或者更新
         if (product.getId() == null) {
             int result = productMapper.insert(product);
@@ -60,9 +67,8 @@ public class IProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ServerResponse set_sale_status(Integer prodectId, Integer status) {
-
-        if (prodectId==null){
+    public ServerResponse set_sale_status(Integer productId, Integer status) {
+        if (productId==null){
             return ServerResponse.createServerResponseByError("商品id不能为空");
         }
         if (status==null){
@@ -70,7 +76,7 @@ public class IProductServiceImpl implements IProductService {
         }
 
         Product product = new Product();
-        product.setId(prodectId);
+        product.setId(productId);
         product.setStatus(status);
         int result = productMapper.updateProductBySelectActive(product);
         if (result > 0) {
@@ -175,16 +181,71 @@ public class IProductServiceImpl implements IProductService {
         return ServerResponse.createServerResponseBySuccess("",pageInfo);
     }
 
+    /**
+     * 查看商品详情
+     * @param productId
+     * @return
+     */
+    @Override
+    public ServerResponse detail_portal(Integer productId) {
+        System.out.println(productId);
+        // 参数校验
+        if (productId==null){
+            return ServerResponse.createServerResponseByError("商品id不能为空");
+        }
+        //查询product
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product==null){
+            return ServerResponse.createServerResponseByError("商品不存在");
+        }
+        //校验商品状态
+        if (product.getStatus()!=Const.ProductStatusEnum.PRODUCT_ONLINE.getCode()){
+            return ServerResponse.createServerResponseByError("商品已下架或删除");
+        }
+        //获取productdetail
+        //返回
+        return ServerResponse.createServerResponseBySuccess("商品信息",product);
+    }
 
+    /**
+     * 图片上传
+     * @param file
+     * @param path
+     * @return
+     */
+    @Override
+    public ServerResponse upload(MultipartFile file, String path) {
+        if (file==null){
+            return ServerResponse.createServerResponseByError("文件错误");
+        }
+        //获取图片名称
+        String originalFilename= file.getOriginalFilename();
+        //获取扩展名
+        String exName=originalFilename.substring(originalFilename.lastIndexOf("."));
+        //生成新的唯一的名字
+        String newFilename = UUID.randomUUID().toString()+exName;
 
+        File pathFile = new File(path);
+        if (!pathFile.exists()){
+            //设置可写并生成
+            pathFile.setWritable(true);
+            pathFile.mkdir();
+        }
+        File file1 = new File(path,newFilename);
 
-
-
-
-
-
-
-
+        try {
+            file.transferTo(file1);
+            //上传到图片服务器
+            //...
+            Map<String,String> map = Maps.newHashMap();
+            map.put("uri",newFilename);
+            map.put("url",PropertiesUtils.readByKey("imageHost")+"/"+newFilename);
+            return ServerResponse.createServerResponseBySuccess("上传成功",map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }

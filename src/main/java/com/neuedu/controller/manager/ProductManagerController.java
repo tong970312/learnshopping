@@ -6,15 +6,14 @@ import com.neuedu.common.Const;
 import com.neuedu.common.ResponseCode;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.service.IProductService;
-import com.neuedu.service.imp.IProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-@Controller
-@RequestMapping(value = "manage/product/")
+@RestController
+@RequestMapping(value = "/manage/product")
 public class ProductManagerController {
 
     @Autowired
@@ -48,6 +47,7 @@ public class ProductManagerController {
     public ServerResponse set_sale_status(HttpSession session,Integer productId,Integer status){
         //获取当前对象
         UserInfo userInfo = (UserInfo) session.getAttribute(Const.CURRENTUSER);
+        System.out.println("userInfo = " + userInfo);
         if (userInfo==null){
             return ServerResponse.createServerResponseByError(ResponseCode.USER_NOT_LOGIN.getStatus(),ResponseCode.USER_NOT_LOGIN.getMsg());
         }
@@ -122,6 +122,16 @@ public class ProductManagerController {
             return productService.search(productId,productName,pageNum,pageSize);
         }
 
+    /**
+     * 查看商品详情
+     * @param productId
+     * @return
+     */
+    @RequestMapping(value = "portal_detail.do")
+        public ServerResponse detail(Integer productId){
+
+            return productService.detail_portal(productId);
+        }
 
 
 }

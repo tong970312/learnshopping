@@ -31,8 +31,8 @@
       quantity, checked, create_time, 
       update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
-      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, now(),
+      now())
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.neuedu.bean.Cart">
     <!--
@@ -44,8 +44,7 @@
       product_id = #{productId,jdbcType=INTEGER},
       quantity = #{quantity,jdbcType=INTEGER},
       checked = #{checked,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -64,5 +63,21 @@
     -->
     select id, user_id, product_id, quantity, checked, create_time, update_time
     from cart
+  </select>
+
+  <select id="selectCartByUserIdAndProductId" resultType="map" resultMap="BaseResultMap">
+    select id, user_id, product_id, quantity, checked, create_time, update_time
+    from cart
+    where user_id=#{userId} and product_id=#{productId}
+  </select>
+
+  <select id="selectCartByUserId" parameterType="int" resultMap="BaseResultMap">
+    select id, user_id, product_id, quantity, checked, create_time, update_time
+    from cart
+    where user_id=#{userId}
+  </select>
+  <select id="isCheckedAll" parameterType="int" resultType="int">
+    select count(1) from cart
+    where user_id=#{userId} and checked =0;
   </select>
 </mapper>

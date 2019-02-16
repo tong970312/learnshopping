@@ -3,6 +3,7 @@ package com.neuedu.service;
 import com.neuedu.bean.Product;
 import com.neuedu.common.ServerResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IProductService {
     /**
@@ -46,4 +47,14 @@ public interface IProductService {
 
     ServerResponse search(Integer productId,String productName,Integer pageNum,Integer pageSize);
 
+
+    ServerResponse detail_portal(Integer productId);
+
+    /**
+     * 图片上传
+     * @param file
+     * @param path
+     * @return
+     */
+    ServerResponse upload(MultipartFile file,String path);
 }

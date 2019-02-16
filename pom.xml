@@ -71,7 +71,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
+      <version>4.2.0.RELEASE</version>
     </dependency>
     <!--spring web项目的依赖-->
     <dependency>

@@ -46,9 +46,8 @@ public class CategoryManagerController {
      */
      @RequestMapping(value = "add_category.do")
     public ServerResponse add_category(HttpSession session,
-                                      Integer parentId,
-                                       String categoryName
-                                       ){
+                                       Integer parentId,
+                                       String categoryName){
         //session获取用户信息
         UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
         if (userInfo==null){
@@ -73,8 +72,7 @@ public class CategoryManagerController {
     @RequestMapping(value = "set_category_name.do")
     public ServerResponse set_category_name(HttpSession session,
                                             Integer categoryId,
-                                            String categoryName
-    ){
+                                            String categoryName){
         //session获取用户信息
         UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
         if (userInfo==null){
@@ -95,8 +93,7 @@ public class CategoryManagerController {
      */
      @RequestMapping(value = "get_deep_category.do")
         public ServerResponse get_deep_category(HttpSession session,
-                                                Integer categoryId
-        ){
+                                                Integer categoryId){
             //session获取用户信息
             UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
             if (userInfo==null){

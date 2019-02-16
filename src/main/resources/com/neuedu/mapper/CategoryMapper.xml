@@ -70,7 +70,7 @@
   <select id="findParentCategory" parameterType="int" resultMap="BaseResultMap">
      select id, parent_id, name, status, create_time, update_time
     from category
-    where
+    where parent_id=#{categoryId}
 
   </select>
 
