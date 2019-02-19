@@ -62,4 +62,43 @@ public interface CartMapper {
      */
     int isCheckedAll(Integer userId);
 
+    /**
+     * 删除购物车的某些商品
+     */
+    int deleteByUserIdAndProductIds(@Param("userId") Integer userId,
+                                    @Param("productIdList") List<Integer> productIdList);
+
+    /**
+     * 操作购物车商品是否选中
+     * @param userId
+     * @param productId
+     * @param checked 1:选中 0未选
+     * @return
+     */
+    int selectOrUnSelectProduct(@Param("userId") Integer userId,
+                                @Param("productId") Integer productId,
+                                @Param("checked") Integer checked);
+
+    /**
+     * 查询购物车中商品数量
+     * @param userId
+     * @return
+     * Integer   加入返回值为空值null, 返回值用Integer不会报错
+     * ifnull(sum(quantity),0)
+     */
+    Integer get_cart_product_count(Integer userId);
+
+    /**
+     * 查询购物车中已选的商品
+     * @param userId
+     * @return
+     */
+    List<Cart> findCartListByUserIdAndChecked(Integer userId);
+
+    /**
+     * 批量删除(清空购物车)
+     * @param cartList
+     * @return
+     */
+    int deleteBatch(List<Cart> cartList);
 }

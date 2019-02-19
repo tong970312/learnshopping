@@ -13,10 +13,10 @@ import com.neuedu.vo.CartProductVO;
 import com.neuedu.vo.CartVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 public class CartServiceImpl implements ICartService {
@@ -24,12 +24,26 @@ public class CartServiceImpl implements ICartService {
     CartMapper cartMapper;
     @Autowired
     ProductMapper productMapper;
+
+    /**
+     * 添加购物车
+     * @param userId
+     * @param productId
+     * @param count
+     * @return
+     */
     @Override
     public ServerResponse add(Integer userId,Integer productId, Integer count) {
         //参数校验
         if (productId==null||count==null){
             return ServerResponse.createServerResponseByError("参数不能为空");
         }
+
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product==null){
+            return ServerResponse.createServerResponseByError("要添加的商品不存在");
+        }
+
         //根据productId 和userId查询购物信息
        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId,productId);
         //如果购物车为空,则执行添加,不为空,则更新商品数量
@@ -54,6 +68,94 @@ public class CartServiceImpl implements ICartService {
         }
         CartVO cartVO = getCartVO(userId);
         return ServerResponse.createServerResponseBySuccess("购物车信息",cartVO);
+    }
+
+    /**
+     * 查询购物车信息
+     * @param userId
+     * @return
+     */
+    @Override
+    public ServerResponse list(Integer userId) {
+        CartVO cartVO =  getCartVO(userId);
+        return ServerResponse.createServerResponseBySuccess("购物车列表",cartVO);
+    }
+
+    /**
+     * 更新商品数量
+      * @param userId
+     * @param productId
+     * @param count
+     * @return
+     */
+    @Override
+    public ServerResponse update(Integer userId, Integer productId, Integer count) {
+        //非空判断
+        if (productId==null&&count==null){
+            return ServerResponse.createServerResponseByError("参数不能为空");
+        }
+        //查询商品
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId,productId);
+        if (cart!=null){
+            //更新数量
+            cart.setQuantity(count);
+            cartMapper.updateByPrimaryKey(cart);
+        }
+        //返回结果
+        return ServerResponse.createServerResponseBySuccess("更新成功",getCartVO(userId));
+    }
+
+     /**
+     * 删除商品
+     * @param userId
+     * @param productIds
+     * @return
+     */
+    @Override
+    public ServerResponse delete_product(Integer userId, String productIds) {
+        //非空校验
+        if (productIds==null||productIds.equals("")){
+            return  ServerResponse.createServerResponseByError("参数不能为空");
+        }
+        //productIds-->List<Integer>
+        //英文逗号
+        String[] productIdsArr=productIds.split(",");
+        List<Integer> productIdList =new ArrayList<>();
+        if (productIdsArr!=null&&productIdsArr.length>0){
+            for (String productIdStr:productIdsArr) {
+                Integer productId = Integer.parseInt(productIdStr);
+                productIdList.add(productId);
+            }
+        }
+        //调用dao
+        cartMapper.deleteByUserIdAndProductIds(userId,productIdList);
+        //返回结果
+        return ServerResponse.createServerResponseBySuccess("删除成功",getCartVO(userId));
+    }
+
+    /**
+     * 选中某个商品
+     * @param userId
+     * @param productId
+     * @return
+     */
+    @Override
+    public ServerResponse select(Integer userId, Integer productId,Integer checked) {
+        //非空校验
+        /*if (productId==null){
+            return  ServerResponse.createServerResponseByError("参数不能为空");
+        }*/
+        //dao接口
+        cartMapper.selectOrUnSelectProduct(userId,productId,checked);
+        //返回结果
+
+        return ServerResponse.createServerResponseBySuccess("选中",getCartVO(userId));
+    }
+
+    @Override
+    public ServerResponse get_cart_product_count(Integer userId) {
+        int quantity =cartMapper.get_cart_product_count(userId);
+        return ServerResponse.createServerResponseBySuccess("商品数量",quantity);
     }
 
     private CartVO getCartVO(Integer userId){
@@ -109,13 +211,15 @@ public class CartServiceImpl implements ICartService {
                 }
                 cartProductVOS.add(cartProductVO);
                 //计算总价格  总价格  不要写成商品价格
-                carttotalprice =  BigDecimalUtils.add(carttotalprice.doubleValue(),cartProductVO.getProductTotalPrice().doubleValue());
+                //被选中的商品总价
+                if (cartProductVO.getChecked()==Const.CartCheckEnum.PRODUCT_CHECKED.getCode()) {
+                    carttotalprice = BigDecimalUtils.add(carttotalprice.doubleValue(), cartProductVO.getProductTotalPrice().doubleValue());
 
-
+                }
             }
         }
         //计算总价
-         cartVO.setCartprice(carttotalprice);
+        cartVO.setCartprice(carttotalprice);
         cartVO.setCartProductVOS(cartProductVOS);
         //判断是否全选
         int count = cartMapper.isCheckedAll(userId);

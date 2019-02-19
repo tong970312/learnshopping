@@ -43,7 +43,7 @@
       #{payment,jdbcType=DECIMAL}, #{paymentType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
       #{shippingId,jdbcType=INTEGER}, #{postage,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, 
       #{sendTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      now(), now())
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.neuedu.bean.Order">
     <!--

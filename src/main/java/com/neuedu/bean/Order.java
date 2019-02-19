@@ -465,4 +465,24 @@ public class Order {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderNo=" + orderNo +
+                ", userId=" + userId +
+                ", payment=" + payment +
+                ", paymentType=" + paymentType +
+                ", status=" + status +
+                ", shippingId=" + shippingId +
+                ", postage=" + postage +
+                ", paymentTime=" + paymentTime +
+                ", sendTime=" + sendTime +
+                ", closeTime=" + closeTime +
+                ", endTime=" + endTime +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }
