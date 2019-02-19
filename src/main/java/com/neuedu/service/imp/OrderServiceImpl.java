@@ -44,7 +44,7 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createServerResponseByError("收货地址参数有误");
         }
         //查询购物车已选中的商品 List<Cart>
-        List<Cart>  cartList = cartMapper.findCartListByUserIdAndChecked(userId);
+        List<Cart> cartList = cartMapper.findCartListByUserIdAndChecked(userId);
         //List<Cart> --> List<OrderItem>
         ServerResponse serverResponse = getCartOrderItem(userId,cartList);
         if (!serverResponse.isSuccess()){
@@ -59,9 +59,10 @@ public class OrderServiceImpl implements IOrderService {
         if (orderItems==null||orderItems.size()==0){
             return ServerResponse.createServerResponseByError("购物车为空");
         }
+        //订单总价
         orderTotalPrice= getOrderTotalPrice(orderItems);
+        //创建订单Order并添加到数据库
         Order order= create(userId,shippingId,orderTotalPrice);
-
         //将List<OrderItem> 保存
         if (order==null){
             return ServerResponse.createServerResponseByError("订单创建失败");
@@ -95,6 +96,7 @@ public class OrderServiceImpl implements IOrderService {
                OrderItemVO orderItemVO = assembleOrderItemVO(orderItem);
                orderItemVOList.add(orderItemVO);
         }
+        //将订单明细前端对象传到订单前端对象中
         orderVo.setOrderItemVOList(orderItemVOList);
         orderVo.setImageHost(PropertiesUtils.readByKey("imageHost"));
 
@@ -237,7 +239,6 @@ public class OrderServiceImpl implements IOrderService {
         for (Cart cart:cartList) {
             OrderItem orderItem  = new OrderItem();
             orderItem.setUserId(userId);
-
             Product product = productMapper.selectByPrimaryKey(cart.getProductId());
             if (product==null){
                 return ServerResponse.createServerResponseByError("商品id为"+cart.getProductId()+"不存在");
@@ -255,7 +256,6 @@ public class OrderServiceImpl implements IOrderService {
             orderItem.setProductName(product.getName());
             orderItem.setTotalPrice(BigDecimalUtils.mul(product.getPrice().doubleValue(),cart.getQuantity().doubleValue()));
 
-            System.out.println("orderItem = " + orderItem);
             orderItemList.add(orderItem);
         }
 

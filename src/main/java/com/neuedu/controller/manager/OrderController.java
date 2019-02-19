@@ -15,6 +15,13 @@ import javax.servlet.http.HttpSession;
 public class OrderController {
     @Autowired
     IOrderService orderService;
+
+    /**
+     * 创建订单
+     * @param session
+     * @param shippingId
+     * @return
+     */
     @RequestMapping(value = "createOrder.do")
     public ServerResponse createOrder(HttpSession session,Integer shippingId){
         UserInfo userInfo = (UserInfo) session.getAttribute(Const.CURRENTUSER);
