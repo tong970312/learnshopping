@@ -50,4 +50,6 @@ public interface OrderItemMapper {
      * @return
      */
     int insertBatch(List<OrderItem> orderItemList);
+
+    List<OrderItem> findByOrderNo(Long orderNo);
 }

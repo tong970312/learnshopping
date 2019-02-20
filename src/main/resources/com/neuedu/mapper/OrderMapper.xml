@@ -63,7 +63,7 @@
       close_time = #{closeTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -84,5 +84,23 @@
     select id, order_no, user_id, payment, payment_type, status, shipping_id, postage, 
     payment_time, send_time, close_time, end_time, create_time, update_time
     from e_order
+  </select>
+  <select id="findOrderByUserIdAndOrderNo" parameterType="map" resultMap="BaseResultMap">
+    select id, order_no, user_id, payment, payment_type, status, shipping_id, postage,
+    payment_time, send_time, close_time, end_time, create_time, update_time
+    from e_order
+    where user_id=#{userId} and order_no=#{orderNo}
+  </select>
+  <select id="findOrderByUserId" parameterType="int" resultMap="BaseResultMap">
+     select id, order_no, user_id, payment, payment_type, status, shipping_id, postage,
+    payment_time, send_time, close_time, end_time, create_time, update_time
+    from e_order
+    where user_id=#{userId}
+  </select>
+  <select id="findOrderByOrderNo" parameterType="long" resultMap="BaseResultMap">
+    select id, order_no, user_id, payment, payment_type, status, shipping_id, postage,
+    payment_time, send_time, close_time, end_time, create_time, update_time
+    from e_order
+    where order_no=#{orderNo}
   </select>
 </mapper>

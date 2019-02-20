@@ -1,5 +1,7 @@
 package com.neuedu.service.imp;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.neuedu.bean.*;
 import com.neuedu.common.Const;
@@ -9,6 +11,7 @@ import com.neuedu.service.IOrderService;
 import com.neuedu.util.BigDecimalUtils;
 import com.neuedu.util.DateUtils;
 import com.neuedu.util.PropertiesUtils;
+import com.neuedu.vo.CartOrderItemVo;
 import com.neuedu.vo.OrderItemVO;
 import com.neuedu.vo.OrderVO;
 import com.neuedu.vo.ShippingVO;
@@ -82,6 +85,121 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     /**
+     * 取消订单
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ServerResponse cancel(Integer userId, Long orderNo) {
+        //参数非空校验
+        if (orderNo==null){
+            return ServerResponse.createServerResponseByError("参数不能为空");
+        }
+        //根据userId和orderNo查询订单
+        Order order = orderMapper.findOrderByUserIdAndOrderNo(userId,orderNo);
+        if (order==null){
+            return ServerResponse.createServerResponseByError("订单不存在");
+        }
+        //判断订单状态
+        if (order.getStatus()!=Const.OrderStatusEnum.ORDER_UN_PAY.getCode()){
+            return ServerResponse.createServerResponseByError("订单不可取消");
+        }
+        order.setStatus(Const.OrderStatusEnum.ORDER_CANCELED.getCode());
+        int result = orderMapper.updateByPrimaryKey(order);
+        if (result>0){
+            return ServerResponse.createServerResponseBySuccess("取消成功");
+        }
+        //返回结果
+        return ServerResponse.createServerResponseByError("订单取消失败");
+    }
+
+    /**
+     * 查询订单明细
+     * @param userId
+     * @return
+     */
+    @Override
+    public ServerResponse get_order_cart_product(Integer userId) {
+        //查询购物车
+        List<Cart> cartList = cartMapper.selectCartByUserId(userId);
+        //List<Cart> -->List<OrderItem>
+        ServerResponse serverResponse = getCartOrderItem(userId,cartList);
+        if (!serverResponse.isSuccess()){
+            return serverResponse;
+        }
+        //组装VO
+        CartOrderItemVo cartOrderItemVo = new CartOrderItemVo();
+        cartOrderItemVo.setImageHost(PropertiesUtils.readByKey("imageHost"));
+        List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
+        if (orderItemList==null||orderItemList.size()==0){
+            return ServerResponse.createServerResponseByError("购物车为空");
+        }
+        List<OrderItemVO> orderItemVOList = Lists.newArrayList();
+        for (OrderItem orderItem:orderItemList) {
+            orderItemVOList.add( assembleOrderItemVO(orderItem));
+        }
+        cartOrderItemVo.setOrderItemVOList(orderItemVOList);
+
+        cartOrderItemVo.setTotalPrice(getOrderTotalPrice(orderItemList));
+        //返回结果
+        return ServerResponse.createServerResponseBySuccess("查询购物车订单明细",cartOrderItemVo);
+    }
+
+    /**
+     * 订单列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public ServerResponse list(Integer userId,Integer pageNum,Integer pageSize){
+        PageHelper.startPage(pageNum,pageSize);
+        List<Order> orderList = Lists.newArrayList();
+        if (userId==null){
+            //查询所有
+            orderList=orderMapper.selectAll();
+        }else{
+            //查询当前用户的
+            orderList = orderMapper.findOrderByUserId(userId);
+        }
+        if (orderList==null||orderList.size()==0){
+            return ServerResponse.createServerResponseByError("未查询到订单");
+        }
+        List<OrderVO> orderVOList = Lists.newArrayList();
+        for (Order order:orderList) {
+           List<OrderItem> orderItemList = orderItemMapper.findByOrderNo(order.getOrderNo());
+           OrderVO orderVO=createOrderVO(order,orderItemList,order.getShippingId());
+            orderVOList.add(orderVO);
+        }
+        PageInfo pageInfo  = new PageInfo(orderVOList);
+        return ServerResponse.createServerResponseBySuccess("订单列表",pageInfo);
+    }
+
+    /**
+     * 订单详情
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ServerResponse detail(Long orderNo) {
+        //参数非空校验
+        if (orderNo==null){
+            return ServerResponse.createServerResponseByError("订单不存在");
+        }
+        //查询订单
+        Order order = orderMapper.findOrderByOrderNo(orderNo);
+        if (order==null){
+            return ServerResponse.createServerResponseByError("订单不存在");
+        }
+        //获取orderVo
+        List<OrderItem> orderItemList = orderItemMapper.findByOrderNo(orderNo);
+        OrderVO orderVO = createOrderVO(order,orderItemList,order.getShippingId());
+        //返回结果
+        return ServerResponse.createServerResponseBySuccess("订单详情",orderVO);
+    }
+
+
+    /**
      * 构建OrderVO
      * @param order
      * @param orderItemList
@@ -97,6 +215,7 @@ public class OrderServiceImpl implements IOrderService {
                orderItemVOList.add(orderItemVO);
         }
         //将订单明细前端对象传到订单前端对象中
+
         orderVo.setOrderItemVOList(orderItemVOList);
         orderVo.setImageHost(PropertiesUtils.readByKey("imageHost"));
 
@@ -174,8 +293,8 @@ public class OrderServiceImpl implements IOrderService {
         if (cartList!=null&&cartList.size()>0){
             cartMapper.deleteBatch(cartList);
         }
-
     }
+
     /**
      * 扣库存
       */
@@ -191,9 +310,7 @@ public class OrderServiceImpl implements IOrderService {
                     product.setStock(product.getStock()-quantity);
                     productMapper.updateByPrimaryKey(product);
             }
-
         }
-
     }
     /**
      * 生成订单
@@ -216,7 +333,6 @@ public class OrderServiceImpl implements IOrderService {
         }
         return null;
     }
-
     /**
      * 生成订单号
      * @return
@@ -255,10 +371,8 @@ public class OrderServiceImpl implements IOrderService {
             orderItem.setProductImage(product.getMainImage());
             orderItem.setProductName(product.getName());
             orderItem.setTotalPrice(BigDecimalUtils.mul(product.getPrice().doubleValue(),cart.getQuantity().doubleValue()));
-
             orderItemList.add(orderItem);
         }
-
         return ServerResponse.createServerResponseBySuccess("购物车清单明细",orderItemList);
     }
 
