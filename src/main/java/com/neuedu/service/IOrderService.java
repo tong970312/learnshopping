@@ -2,6 +2,8 @@ package com.neuedu.service;
 
 import com.neuedu.common.ServerResponse;
 
+import java.util.Map;
+
 public interface IOrderService {
     /**
      * 创建订单
@@ -39,4 +41,14 @@ public interface IOrderService {
      * @return
      */
     ServerResponse detail(Long orderNo);
+
+    /**
+     * 支付接口
+     */
+    ServerResponse pay(Integer userId,Long orderNo);
+
+    /**
+     * 支付宝回调
+     */
+    ServerResponse alipay_callback(Map<String,String> map);
 }

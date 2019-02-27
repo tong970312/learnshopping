@@ -13,6 +13,8 @@ public class Const {
     public static final String USERNAME= "username";
     public static final String EMAIL= "email";
 
+    public static final String TRADE_SUCCESS="TRADE_SUCCESS";
+
     public  enum ProductStatusEnum{
         PRODUCT_ONLINE(1,"在售"),
         PRODUCT_OFFONLINE(2,"下架"),
@@ -159,7 +161,32 @@ public enum OrderStatusEnum{
             return null;
         }
     }
+    public enum PaymentPlatformEnum{
+       ALIPAY(1,"支付宝");
 
+        private int code;
+        private String desc;
+        PaymentPlatformEnum(int code, String desc) {
+            this.code=code;
+            this.desc=desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
 
 
 
