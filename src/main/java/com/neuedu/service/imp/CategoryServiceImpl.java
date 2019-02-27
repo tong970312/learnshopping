@@ -49,7 +49,6 @@ public class CategoryServiceImpl implements ICategoryService {
             category.setName(categoryName);
             category.setParentId(parentId);
             category.setStatus(1);
-        System.out.println("category = " + category);
             int result = categoryMapper.insert(category);
             if (result<=0){
                 return ServerResponse.createServerResponseByError("添加失败");

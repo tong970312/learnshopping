@@ -175,6 +175,7 @@ public class CartServiceImpl implements ICartService {
                     cartProductVO.setQuantity(cart.getQuantity());
                     cartProductVO.setUserId(userId);
                     cartProductVO.setProductChecked(cart.getChecked());
+                    cartProductVO.setChecked(cart.getChecked());
                 //查询商品
                 Product product = productMapper.selectByPrimaryKey(cart.getProductId());
                 //商品信息转换成购物车商品信息
