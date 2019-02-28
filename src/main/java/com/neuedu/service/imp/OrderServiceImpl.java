@@ -300,6 +300,27 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createServerResponseByError("保存支付信息失败");
     }
 
+    /**
+     * 查询订单支付状态
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public ServerResponse query_order_pay_status(Long orderNo) {
+        if (orderNo==null){
+            return ServerResponse.createServerResponseByError("订单号不能为空");
+        }
+        Order order= orderMapper.findOrderByOrderNo(orderNo);
+        if (order==null){
+            return ServerResponse.createServerResponseByError("订单不存在");
+        }
+        if(order.getStatus()==Const.OrderStatusEnum.ORDER_PAY.getCode()){
+            return ServerResponse.createServerResponseBySuccess("",true);
+        }
+
+        return ServerResponse.createServerResponseBySuccess("",false);
+    }
+
     private static Log log = LogFactory.getLog(Main.class);
 
     // 支付宝当面付2.0服务
@@ -661,7 +682,7 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl("http://kdfjjy.natappfree.cc/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl("http://47mkvv.natappfree.cc/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);

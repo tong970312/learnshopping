@@ -51,4 +51,11 @@ public interface IOrderService {
      * 支付宝回调
      */
     ServerResponse alipay_callback(Map<String,String> map);
+
+    /**
+     * 查询订单支付状态
+     *
+     */
+    ServerResponse query_order_pay_status(Long orderNo);
+
 }

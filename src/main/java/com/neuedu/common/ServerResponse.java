@@ -28,6 +28,7 @@ public class ServerResponse<T> {
         this.status=status;
         this.msg = msg;
     }
+
     private ServerResponse(int status, String msg, T data){
         this.status = status;
         this.data = data;

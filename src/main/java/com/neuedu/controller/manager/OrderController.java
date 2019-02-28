@@ -132,7 +132,7 @@ public class OrderController {
             String[] strArr = params.get(key);
             String value = "";
             for (int i = 0; i <strArr.length ; i++) {
-                value =(i==strArr[i].length()-1)?value+strArr[i]:value+strArr[i]+",";
+                value =(i==strArr.length-1)?value+strArr[i]:value+strArr[i]+",";
             }
             requestparams.put(key,value);
         }
@@ -157,5 +157,18 @@ public class OrderController {
         }
         //处理业务逻辑
         return orderService.alipay_callback(requestparams);
+    }
+
+    /**
+     * 查询订单支付状态
+     */
+    @RequestMapping(value = "query_order_pay_status.do")
+    public ServerResponse query_order_pay_status(HttpSession session,Long orderNo){
+        UserInfo userInfo = (UserInfo) session.getAttribute(Const.CURRENTUSER);
+        if (userInfo==null){
+            return ServerResponse.createServerResponseByError("需要登录");
+        }
+
+        return orderService.query_order_pay_status(orderNo);
     }
 }
